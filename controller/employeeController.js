@@ -1,28 +1,23 @@
 const express = require('express');
-const router = express.Router();
+var router = express.Router();
 const mongoose = require('mongoose');
 const Employee = mongoose.model('Employee');
 
-
-router.get('/',(req,res) =>{
-   //res.json('sample text');
-   res.render("employee/addOrEdit",{
-       viewTitle : 'Insert Employee'
-   });
+router.get('/', (req, res) => {
+    res.render("employee/addOrEdit", {
+        viewTitle: "Insert Employee"
+    });
 });
 
-/* router.post('/',(req,res) =>{
-    insertRecord(req, res);
- }); */
-
- router.post('/', (req, res) => {
+router.post('/', (req, res) => {
     if (req.body._id == '')
         insertRecord(req, res);
         else
         updateRecord(req, res);
 });
 
- function insertRecord(req, res) {
+
+function insertRecord(req, res) {
     var employee = new Employee();
     employee.fullName = req.body.fullName;
     employee.email = req.body.email;
@@ -45,7 +40,6 @@ router.get('/',(req,res) =>{
     });
 }
 
-
 function updateRecord(req, res) {
     Employee.findOneAndUpdate({ _id: req.body._id }, req.body, { new: true }, (err, doc) => {
         if (!err) { res.redirect('employee/list'); }
@@ -64,7 +58,6 @@ function updateRecord(req, res) {
 }
 
 
-
 router.get('/list', (req, res) => {
     Employee.find((err, docs) => {
         if (!err) {
@@ -79,7 +72,7 @@ router.get('/list', (req, res) => {
 });
 
 
- function handleValidationError(err, body) {
+function handleValidationError(err, body) {
     for (field in err.errors) {
         switch (err.errors[field].path) {
             case 'fullName':
@@ -104,7 +97,6 @@ router.get('/:id', (req, res) => {
         }
     });
 });
- 
 
 router.get('/delete/:id', (req, res) => {
     Employee.findByIdAndRemove(req.params.id, (err, doc) => {
